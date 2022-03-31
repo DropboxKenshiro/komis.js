@@ -1,3 +1,11 @@
 komis.js.code-workspace
-package.json
 .vscode
+
+package.json
+package-lock.json
+node_modules
+bin
+
+.dockerignore
+Dockerfile
+docker-compose.yml
