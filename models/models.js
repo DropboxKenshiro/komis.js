@@ -23,30 +23,24 @@ class User extends Model {};
             type: DataTypes.STRING,
             allowNull: false,
             validate: {
-                isAlphanumeric: true
+                is: /^[0-9a-f-]{36}$/i
             }
         },
         firstName: {
             type: DataTypes.STRING(30),
             allowNull: false,
-            validate: {
-                isAlpha: true
-            }
+            validate: {}
         },
         lastName: {
             type: DataTypes.STRING(30),
             allowNull: false,
-            validate: {
-                isAlpha: true
-            }
+            validate: {}
         },
         dateOfBirth: DataTypes.DATEONLY,
         adressString: {
             type: DataTypes.STRING(100),
             allowNull: false,
-            validate: {
-                isAlphanumeric: true
-            }
+            validate: {}
         },
         zipCode: {
             type: DataTypes.STRING,
@@ -58,15 +52,11 @@ class User extends Model {};
         location: {
             type: DataTypes.STRING,
             allowNull: false,
-            validate: {
-                isAlpha: true
-            }
+            validate: {}
         },
         description: {
             type: DataTypes.TEXT,
-            validate: {
-                isAlpha: true
-            }
+            validate: {}
         }
     }, {sequelize});
     await User.sync({alter: true});
