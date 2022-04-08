@@ -1,8 +1,11 @@
 var crypto = require("crypto");
+var jsonwebtoken = require("jsonwebtoken");
+var passport = require("passport")
 
 var express = require('express');
 var router = express.Router();
 var {User} = require('../models/models');
+var {issueToken} = require('../utils/auth');
 
 router.post('/register', async function(req, res, next) {
   try {
@@ -38,6 +41,17 @@ router.post('/register', async function(req, res, next) {
     )
   }
 });
+
+router.post('/login', passport.authenticate('local', {session: false}), function(req, res, next) {
+  res.status(200).json({
+    success: true,
+    jwtToken: issueToken(req.body.email)
+  });
+})
+
+router.post('/validate', passport.authenticate('jwt', {session: false}), function(req, res, next) {
+  res.status(200).json({success: true});
+})
 
 router.get('/info', function(req, res, next) {
 
