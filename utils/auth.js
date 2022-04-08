@@ -15,17 +15,17 @@ const tokenOptions = {
     issuer: "komisjs"
 }
 
-passport.use(new LocalStrategy(async function (email, password, done) {
+passport.use(new LocalStrategy({usernameField: "email", session: false}, async function (email, password, done) {
     try {
         const loginData = await User.findOne({
             attributes: ['email', 'password', 'salt'],
             where: {
-              email: req.body.email
+              email: email
             }
           });
 
           const hasher = crypto.createHash('sha256');
-          hasher.update(req.body.password + loginData.salt);
+          hasher.update(password + loginData.salt);
         
           if(loginData != null && hasher.digest('hex') === loginData.password) {
             return done(null, loginData);
