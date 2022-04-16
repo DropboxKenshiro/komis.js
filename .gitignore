@@ -2,7 +2,6 @@ komis.js.code-workspace
 .vscode
 
 node_modules
-bin
 
 .dockerignore
 Dockerfile
