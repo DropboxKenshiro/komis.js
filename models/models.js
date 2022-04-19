@@ -59,7 +59,153 @@ class User extends Model {};
             validate: {}
         }
     }, {sequelize});
-    await User.sync({alter: true});
+})();
+
+class EngineType extends Model {};
+(async function () {
+    EngineType.init({
+        name: {
+            type: DataTypes.STRING(30),
+            primaryKey: true,
+            allowNull: false,
+            validate: {
+                is: /^\p{L}-$/i
+            }
+        }
+    }, {sequelize});
+})();
+
+class Country extends Model {};
+(async function () {
+    Country.init({
+        name: {
+            type:DataTypes.STRING(30),
+            primaryKey: true,
+            allowNull: false,
+            validate: {
+                is: /^\p{L}-$/i // validates against letters in all languages present in Unicode
+            }
+        },
+        trigram: {
+            type: DataTypes.STRING(3),
+            allowNull: false,
+            validate: {
+                is: /[A-Z]{3}/i
+            }
+        }
+    }, {sequelize});
+})();
+
+class Manufactuer extends Model {};
+(async function () {
+    Manufactuer.init({
+        name: {
+            type: DataTypes.STRING(30),
+            primaryKey: true,
+            allowNull: false,
+            validate: {
+                is: /^\p{L}-$/i 
+            }
+        }
+    }, {sequelize});
+})();
+
+Country.hasMany(Manufactuer);
+
+class CarModel extends Model {};
+CarModel.init({
+    name: {
+        type: DataTypes.STRING(30),
+        primaryKey: true,
+        allowNull: false,
+        validate: {
+            is: /^\p{L}-$/i 
+        }
+    },
+    manufactuer: {
+        type: DataTypes.STRING(30),
+        primaryKey: true,
+        allowNull: false,
+        validate: {
+            is: /^\p{L}-$/i 
+        }
+    }}, {sequelize}
+)
+
+Manufactuer.hasMany(CarModel, {foreignKey: 'manufactuer'});
+
+class CarOffer extends Model {};
+CarOffer.init({
+    offerId: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        allowNull: false,
+        autoIncrement: true,
+    },
+    image: {
+        type: DataTypes.STRING,
+        validate: {
+            isUrl: true
+        }
+    },
+    price: {
+        type: DataTypes.DECIMAL(12,2),
+        allowNull: false,
+        validate: {
+            min: 1
+        }
+    },
+    modelYear: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        validate: {
+            min: 1900,
+            max: 3000
+        }
+    },
+    mileage: {
+        type: DataTypes.BIGINT,
+        allowNull: false,
+        validate: {
+            min: 1
+        }
+    },
+    engineCapacity: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        validate: {
+            min: 10
+        }
+    },
+    description: {
+        type: DataTypes.STRING(500),
+        validate: {
+            is: /^\p{L}-$/i 
+        }
+    },
+    latitude: { // notice: positive numbers are degrees north, negative are degrees south
+        type: DataTypes.DECIMAL(9,6),
+        allowNull: false,
+        validate: {
+            max: 90,
+            min: -90
+        }
+    },
+    longitude: { // notice: positive numbers are degrees west, negative are degrees east
+        type: DataTypes.DECIMAL(9,6),
+        allowNull: false,
+        validate: {
+            max: 180,
+            min: -180
+        }
+    }}, {sequelize}
+)
+
+Manufactuer.hasMany(CarOffer);
+EngineType.hasMany(CarOffer);
+
+(async function () {
+    await sequelize.sync({alter: true});
 })();
 
 module.exports = {User};
