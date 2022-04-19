@@ -2,113 +2,105 @@ const {Sequelize, DataTypes, Model} = require("sequelize");
 const sequelize = new Sequelize('komisjs', 'komisdb', 'example123', {host: 'mariadb', dialect: 'mariadb'});
 
 class User extends Model {};
-(async function () {
-    User.init({
-        email: {
-            type: DataTypes.STRING,
-            primaryKey: true,
-            allowNull: false,
-            validate: {
-                isEmail: true
-            }
-        },
-        password: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            validate: {
-                isAlphanumeric: true
-            }
-        },
-        salt: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            validate: {
-                is: /^[0-9a-f-]{36}$/i
-            }
-        },
-        firstName: {
-            type: DataTypes.STRING(30),
-            allowNull: false,
-            validate: {}
-        },
-        lastName: {
-            type: DataTypes.STRING(30),
-            allowNull: false,
-            validate: {}
-        },
-        dateOfBirth: DataTypes.DATEONLY,
-        adressString: {
-            type: DataTypes.STRING(100),
-            allowNull: false,
-            validate: {}
-        },
-        zipCode: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            validate:{
-                is: /^\d{2}-\d{3}$/i // Polish zip code format: XX-XXX
-            }
-        },
-        location: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            validate: {}
-        },
-        description: {
-            type: DataTypes.TEXT,
-            validate: {}
+User.init({
+    email: {
+        type: DataTypes.STRING,
+        primaryKey: true,
+        allowNull: false,
+        validate: {
+            isEmail: true
         }
-    }, {sequelize});
-})();
+    },
+    password: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+            isAlphanumeric: true
+        }
+    },
+    salt: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+            is: /^[0-9a-f-]{36}$/i
+        }
+    },
+    firstName: {
+        type: DataTypes.STRING(30),
+        allowNull: false,
+        validate: {}
+    },
+    lastName: {
+        type: DataTypes.STRING(30),
+        allowNull: false,
+        validate: {}
+    },
+    dateOfBirth: DataTypes.DATEONLY,
+    adressString: {
+        type: DataTypes.STRING(100),
+        allowNull: false,
+        validate: {}
+    },
+    zipCode: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate:{
+            is: /^\d{2}-\d{3}$/i // Polish zip code format: XX-XXX
+        }
+    },
+    location: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {}
+    },
+    description: {
+        type: DataTypes.TEXT,
+        validate: {}
+    }
+}, {sequelize});
 
 class EngineType extends Model {};
-(async function () {
-    EngineType.init({
-        name: {
-            type: DataTypes.STRING(30),
-            primaryKey: true,
-            allowNull: false,
-            validate: {
-                is: /^\p{L}-$/i
-            }
+EngineType.init({
+    name: {
+        type: DataTypes.STRING(30),
+        primaryKey: true,
+        allowNull: false,
+        validate: {
+            is: /^\p{L}-$/i
         }
-    }, {sequelize});
-})();
+    }
+}, {sequelize});
 
 class Country extends Model {};
-(async function () {
-    Country.init({
-        name: {
-            type:DataTypes.STRING(30),
-            primaryKey: true,
-            allowNull: false,
-            validate: {
-                is: /^\p{L}-$/i // validates against letters in all languages present in Unicode
-            }
-        },
-        trigram: {
-            type: DataTypes.STRING(3),
-            allowNull: false,
-            validate: {
-                is: /[A-Z]{3}/i
-            }
+Country.init({
+    name: {
+        type:DataTypes.STRING(30),
+        primaryKey: true,
+        allowNull: false,
+        validate: {
+            is: /^\p{L}-$/i // validates against letters in all languages present in Unicode
         }
-    }, {sequelize});
-})();
+    },
+    trigram: {
+        type: DataTypes.STRING(3),
+        allowNull: false,
+        validate: {
+            is: /[A-Z]{3}/i
+        }
+    }
+}, {sequelize});
 
 class Manufactuer extends Model {};
-(async function () {
-    Manufactuer.init({
-        name: {
-            type: DataTypes.STRING(30),
-            primaryKey: true,
-            allowNull: false,
-            validate: {
-                is: /^\p{L}-$/i 
-            }
+Manufactuer.init({
+    name: {
+        type: DataTypes.STRING(30),
+        primaryKey: true,
+        allowNull: false,
+        validate: {
+            is: /^\p{L}-$/i 
         }
-    }, {sequelize});
-})();
+    }
+}, {sequelize});
 
 Country.hasMany(Manufactuer);
 
@@ -129,8 +121,7 @@ CarModel.init({
         validate: {
             is: /^\p{L}-$/i 
         }
-    }}, {sequelize}
-)
+    }}, {sequelize});
 
 Manufactuer.hasMany(CarModel, {foreignKey: 'manufactuer'});
 
@@ -198,8 +189,7 @@ CarOffer.init({
             max: 180,
             min: -180
         }
-    }}, {sequelize}
-)
+    }}, {sequelize});
 
 Manufactuer.hasMany(CarOffer);
 EngineType.hasMany(CarOffer);
