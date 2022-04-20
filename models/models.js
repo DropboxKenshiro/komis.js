@@ -53,6 +53,13 @@ User.init({
         allowNull: false,
         validate: {}
     },
+    phoneNumber: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+            isNumeric: true
+        }
+    },
     description: {
         type: DataTypes.TEXT,
         validate: {}
