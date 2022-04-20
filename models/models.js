@@ -198,4 +198,4 @@ EngineType.hasMany(CarOffer);
     await sequelize.sync({alter: true});
 })();
 
-module.exports = {User};
+module.exports = {User, CarOffer, Country, Manufactuer};
