@@ -1,8 +1,8 @@
 const {Sequelize, DataTypes, Model} = require("sequelize");
 const sequelize = new Sequelize('komisjs', 'komisdb', 'example123', {host: 'mariadb', dialect: 'mariadb'});
 
-const allCharRegex = /^\p{L}-$/i;
-const allWordRegex = /^\p{L}-\ $/i;
+const allCharRegex = /^[\p{L}0-9]+$/iu;
+const allWordRegex = /^[\p{L}\s0-9]+$/iu;
 
 class User extends Model {};
 User.init({
@@ -121,7 +121,7 @@ CarModel.init({
         primaryKey: true,
         allowNull: false,
         validate: {
-            is: allWordRegex
+            is: /^[\p{L} \0-9()]+$/i
         }
     },
     manufactuer: {
