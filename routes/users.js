@@ -53,8 +53,64 @@ router.post('/validate', passport.authenticate('jwt', {session: false}), functio
   res.status(200).json({success: true});
 })
 
-router.get('/info', function(req, res, next) {
+router.get('/info/:uemail', async function(req, res, next) {
+  const userInfo = await User.findByPk(req.params.uemail);
 
+  if(userInfo != null) {
+    res.status(200).json({
+      success: true,
+      email: userInfo.email,
+      firstName: userInfo.firstName,
+      lastName: userInfo.lastName,
+      dateOfBirth: userInfo.dateOfBirth,
+      adressString: userInfo.adressString,
+      zipCode: userInfo.zipCode,
+      location: userInfo.location,
+      phoneNumber: userInfo.phoneNumber
+    })
+  }
+  else {
+    res.status(400).json({
+      success: false
+    })
+  }
+})
+
+router.patch('/edit/:uemail', passport.authenticate('jwt', {session: false}), async function(req, res, next) {
+  // protection,  password should be changed by separate endpoint, salt should never be changed manually
+  if("password" in req.body || "salt" in req.body) {
+    res.status(403).json({
+      success: false,
+      message: "Illegal properties"
+    })
+    return;
+  }
+  // check if user changes its data
+  if(req.params.uemail != req.user.email) {
+    res.status(401).json({
+      success: false,
+      message: "Unauthorized"
+    })
+  }
+
+  try {
+    await User.update(req.body, {where: {
+      email: req.params.uemail
+    }});
+  }
+  catch (err) {
+    res.status(400).json(
+      {
+        success: false,
+        errorType: err.name,
+        errorDescription: err.message
+      }
+    )
+  }
+
+  res.status(200).json({
+    success: true
+  })
 })
 
 module.exports = router;
