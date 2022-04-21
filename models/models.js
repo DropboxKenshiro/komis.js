@@ -1,6 +1,9 @@
 const {Sequelize, DataTypes, Model} = require("sequelize");
 const sequelize = new Sequelize('komisjs', 'komisdb', 'example123', {host: 'mariadb', dialect: 'mariadb'});
 
+const allCharRegex = /^\p{L}-$/i;
+const allWordRegex = /^\p{L}-\ $/i;
+
 class User extends Model {};
 User.init({
     email: {
@@ -73,7 +76,7 @@ EngineType.init({
         primaryKey: true,
         allowNull: false,
         validate: {
-            is: /^\p{L}-$/i
+            is: allCharRegex
         }
     }
 }, {sequelize});
@@ -85,7 +88,7 @@ Country.init({
         primaryKey: true,
         allowNull: false,
         validate: {
-            is: /^\p{L}-$/i // validates against letters in all languages present in Unicode
+            is: allWordRegex
         }
     },
     trigram: {
@@ -104,7 +107,7 @@ Manufactuer.init({
         primaryKey: true,
         allowNull: false,
         validate: {
-            is: /^\p{L}-$/i 
+            is: allCharRegex
         }
     }
 }, {sequelize});
@@ -118,7 +121,7 @@ CarModel.init({
         primaryKey: true,
         allowNull: false,
         validate: {
-            is: /^\p{L}-$/i 
+            is: allWordRegex
         }
     },
     manufactuer: {
@@ -126,7 +129,7 @@ CarModel.init({
         primaryKey: true,
         allowNull: false,
         validate: {
-            is: /^\p{L}-$/i 
+            is: allCharRegex
         }
     }}, {sequelize});
 
@@ -139,6 +142,12 @@ CarOffer.init({
         primaryKey: true,
         allowNull: false,
         autoIncrement: true,
+    },
+    title: {
+        type: DataTypes.STRING(50),
+        validate: {
+            is: allWordRegex
+        }
     },
     image: {
         type: DataTypes.STRING,
@@ -178,7 +187,7 @@ CarOffer.init({
     description: {
         type: DataTypes.STRING(500),
         validate: {
-            is: /^\p{L}-$/i 
+            is: allWordRegex 
         }
     },
     latitude: { // notice: positive numbers are degrees north, negative are degrees south
@@ -199,6 +208,7 @@ CarOffer.init({
     }}, {sequelize});
 
 Manufactuer.hasMany(CarOffer);
+CarModel.hasMany(CarOffer);
 EngineType.hasMany(CarOffer);
 
 (async function () {
