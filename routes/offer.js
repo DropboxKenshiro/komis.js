@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const passport = require("passport");
+const {Client} = require("@googlemaps/google-maps-services-js");
 
 const {CarOffer} = require("../models/models");
 
@@ -42,7 +43,17 @@ router.get('/:offerid', async function(req, res, next) {
 
 router.post('/', passport.authenticate('jwt', {session: false}), async function(req, res, next) {
     try {
+        const client = new Client({});
+        const options = {
+          params: {
+            key: process.env.MAPS_API_KEY,
+            address: `${req.body.adress}, ${req.body.city}`
+          }
+        }
+        const geodata = await client.geocode(options);
+
         await CarOffer.create({
+            UserEmail: req.user.email,
             title: req.body.title,
             image: req.body.image,
             ManufactuerName: req.body.manufactuer,
@@ -53,8 +64,8 @@ router.post('/', passport.authenticate('jwt', {session: false}), async function(
             mileage: req.body.mileage,
             engineCapacity: req.body.engineCapacity,
             description: req.body.description,
-            latitude: 0,
-            longitude: 0 // geographical coordinates would be determined from location given in body
+            latitude: geodata.data.results[0].geometry.location.lat,
+            longitude: geodata.data.results[0].geometry.location.lng // geographical coordinates would be determined from location given in body
         });
         res.status(200).json({
             success: true

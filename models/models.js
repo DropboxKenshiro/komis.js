@@ -198,7 +198,7 @@ CarOffer.init({
             min: -90
         }
     },
-    longitude: { // notice: positive numbers are degrees west, negative are degrees east
+    longitude: { // notice: positive numbers are degrees east, negative are degrees west
         type: DataTypes.DECIMAL(9,6),
         allowNull: false,
         validate: {
@@ -210,6 +210,7 @@ CarOffer.init({
 Manufactuer.hasMany(CarOffer);
 CarModel.hasMany(CarOffer);
 EngineType.hasMany(CarOffer);
+User.hasMany(CarOffer);
 
 (async function () {
     await sequelize.sync({alter: true});
