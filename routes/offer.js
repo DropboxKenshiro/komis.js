@@ -1,9 +1,39 @@
 const express = require("express");
 const router = express.Router();
 const passport = require("passport");
-const {Client} = require("@googlemaps/google-maps-services-js");
+const {Op} = require("sequelize");
+const {locateAddress, geoCoordsDistance} = require("../utils/geo");
 
 const {CarOffer} = require("../models/models");
+
+router.get('/list', async function (req, res, next) {
+  const offerList = await CarOffer.findAll({
+    where: {
+      price: {
+        [Op.gte]: req.body.priceMin ? req.body.priceMin : 0,
+        [Op.lte]: req.body.priceMax ? req.body.priceMax : Number.MAX_SAFE_INTEGER
+      },
+      modelYear: {
+        [Op.gte]: req.body.yearMin ? req.body.yearMin : 0,
+        [Op.lte]: req.body.yearMax ? req.body.yearMax : Number.MAX_SAFE_INTEGER
+      },
+      mileage: {
+        [Op.gte]: req.body.mileageMin ? req.body.mileageMin : 0,
+        [Op.lte]: req.body.mileageMax ? req.body.mileageMax : Number.MAX_SAFE_INTEGER
+      }
+    }
+  })
+
+  // eliminiate all offers that are farther than specified kilometer limit
+  // this is kinda kinky to implement in sequelize, maybe we can change that in the future
+  const reqPos = await locateAddress(req.body.city, req.body.address);
+  const offerListFiltered = offerList.filter(o => (geoCoordsDistance(reqPos, [o.latitude, o.longitude]))/1000 <= req.body.kilometers);
+
+  res.status(200).json({
+    success: true,
+    list: offerListFiltered
+  });
+})
 
 router.get('/:offerid', async function(req, res, next) {
   try {
@@ -13,6 +43,7 @@ router.get('/:offerid', async function(req, res, next) {
       res.status(200).json({
         success: true,
         offerId: offerInfo.offerId,
+        userEmail: offerInfo.UserEmail,
         title: offerInfo.title,
         manufactuer: offerInfo.ManufactuerName,
         carModel: offerInfo.CarModelName,
@@ -43,14 +74,7 @@ router.get('/:offerid', async function(req, res, next) {
 
 router.post('/', passport.authenticate('jwt', {session: false}), async function(req, res, next) {
     try {
-        const client = new Client({});
-        const options = {
-          params: {
-            key: process.env.MAPS_API_KEY,
-            address: `${req.body.adress}, ${req.body.city}`
-          }
-        }
-        const geodata = await client.geocode(options);
+        const addressLocation = await locateAddress(req.body.city, req.body.address)
 
         await CarOffer.create({
             UserEmail: req.user.email,
@@ -64,8 +88,8 @@ router.post('/', passport.authenticate('jwt', {session: false}), async function(
             mileage: req.body.mileage,
             engineCapacity: req.body.engineCapacity,
             description: req.body.description,
-            latitude: geodata.data.results[0].geometry.location.lat,
-            longitude: geodata.data.results[0].geometry.location.lng // geographical coordinates would be determined from location given in body
+            latitude: addressLocation[0],
+            longitude: addressLocation[1]
         });
         res.status(200).json({
             success: true
