@@ -1,3 +1,4 @@
+const { findPlaceFromText } = require("@googlemaps/google-maps-services-js/dist/places/findplacefromtext");
 const {Sequelize, DataTypes, Model} = require("sequelize");
 const sequelize = new Sequelize('komisjs', 'komisdb', 'example123', {host: 'mariadb', dialect: 'mariadb'});
 
@@ -211,6 +212,26 @@ Manufactuer.hasMany(CarOffer);
 CarModel.hasMany(CarOffer);
 EngineType.hasMany(CarOffer);
 User.hasMany(CarOffer);
+
+class FollowedOffer extends Model{};
+FollowedOffer.init({
+    UserEmail: {
+        type: DataTypes.STRING,
+        primaryKey: true,
+        references: {
+            model: User,
+            key: 'email'
+        }
+    },
+    OfferId: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        references: {
+            model: CarOffer,
+            key: 'offerId'
+        }
+    }
+}, {sequelize});
 
 (async function () {
     await sequelize.sync({alter: true});
