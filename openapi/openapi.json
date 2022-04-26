@@ -1,0 +1,309 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "Komis.js API",
+        "description": "Simple API for car offer site backend.",
+        "license": {
+            "name": "MIT"
+        }
+    },
+    "paths": {
+        "/users/register": {
+            "post": {
+                "description": "Used to register new users into the system.",
+                "requestBody": {
+                    "description": "User to add to the system.",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            },
+                            "example": {
+                                "email": "rafał@brzozowski.net",
+                                "password": "takblisko123",
+                                "firstName": "Rafał",
+                                "lastName": "Brzozowski",
+                                "dateOfBirth": "1989-01-01",
+                                "adressString": "Woronicza 17",
+                                "zipCode": "00-000",
+                                "location": "Warszawa",
+                                "description": "Prawie wygrałem Eurowizję"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "A notion of a success",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "success": true
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Failure occured.",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "success": false,
+                                    "errorType": "SequelizeValidationError",
+                                    "errorDescription": "notNull Violation: User.lastName cannot be null,\nnotNull Violation: User.phoneNumber cannot be null"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/login": {
+            "post": {
+                "description": "Used to login, in other words, to get JWT token that allows to communicate with user-specific endpoints.",
+                "requestBody": {
+                    "description": "Login and password of user that wants to log in",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type":"object"
+                            },
+                            "example": {
+                                "email": "guy@company.com",
+                                "password": "verysecretpassword1$"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "JSON containing JWT token to use later.",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "success": true,
+                                    "jwtToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InJhZmHFgkBicnpvem93c2tpLm5ldCIsImlhdCI6MTY1MDg4NTgzOCwiZXhwIjoxNjUwOTcyMjM4LCJhdrb21pc2pzLXVzZXJzIiwiaXNzIjoia29taXNqcyJ9.nGgurhH2Q-xgQSCxInFccQW-tkh8Ku6uBqc"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Failure occured. Bad login or password. User unauthorized."
+                    }
+                }
+            }
+        },
+        "/users/info/{email}": {
+            "get": {
+                "description": "Used to get information about particular user, based on his email.",
+                "parameters": [
+                    {
+                        "name": "email",
+                        "in": "path",
+                        "description": "Email of user we want to fetch",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully fetched information about an user.",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "success": true,
+                                    "email": "rafał@brzozowski.net",
+                                    "firstName": "Rafał",
+                                    "lastName": "Brzozowski",
+                                    "dateOfBirth": "1989-01-01",
+                                    "adressString": "Woronicza 17",
+                                    "zipCode": "00-000",
+                                    "location": "Warszawa",
+                                    "phoneNumber": "123123121"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "User with given email doesn't exist.",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "success": false
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/edit/{uemail}": {
+            "patch": {
+                "description": "Endpoint used to edit user's data.",
+                "parameters": [
+                    {
+                        "name": "email",
+                        "in": "path",
+                        "description": "Email of user we want to fetch",
+                        "required": true
+                    }
+                ],
+                "requestBody": {
+                    "description": "Fields to edit data. Same as in registration. Can't contain password or salt.",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type":"object"
+                            },
+                            "example": {
+                                "firstName": "George",
+                                "lastName": "Smith"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Data successfully edited.",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "success": true
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Tried to change password or salt, which is forbidden here.",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "success": false,
+                                    "message": "Illegal properties"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "User tried to change data of another user, not his data.",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "success": false,
+                                    "message": "Unauthorized"
+                                  }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/offer/{offerid}": {
+            "get": {
+                "description": "Get data of an offer with given id.",
+                "parameters": [
+                    {
+                        "name": "offerid",
+                        "in": "path",
+                        "description": "Offer's id.",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Fetched offer data.",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "success": true,
+                                    "offerId": 5,
+                                    "userEmail": "rafał@brzozowski.net",
+                                    "title": "Testuję jeszcze raz",
+                                    "manufactuer": "BMW",
+                                    "carModel": "Seria 3 (E46)",
+                                    "modelYear": 1999,
+                                    "engineType": "Spalinowy",
+                                    "engineCapacity": 2000,
+                                    "mileage": 129900,
+                                    "description": "Piękne BMW M3 E46 pryma sort",
+                                    "latitude": "52.532951",
+                                    "longitude": "21.686139"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Offer with said id doesn't exist.",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "success": false,
+                                    "message": "No offer with that id exists"
+                                  }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request."
+                    }
+                }
+            }
+        },
+        "/offer": {
+            "post": {
+                "description": "Create a new car offer.",
+                "requestBody": {
+                    "description": "Parameters of said car offer.",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            },
+                            "example": {
+                                "manufactuer": "BMW",
+                                "carModel": "Seria 3 (E46)",
+                                "title": "Testuję jeszcze raz",
+                                "price": 20000,
+                                "modelYear": 1999,
+                                "mileage": 129900,
+                                "engineCapacity": 2000,
+                                "engineType": "Spalinowy",
+                                "description": "Piękne BMW M3 E46 pryma sort",
+                                "city": "Łochów",
+                                "adress": "al. Łochowska 1"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "A notion of a success.",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "success": true
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Error in request's body.",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "success": false,
+                                    "errorType": "SequelizeValidationError",
+                                    "errorDescription": "notNull Violation: CarOffer.mileage cannot be null"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Bad token. Request unauthorized."
+                    }
+                }
+            }
+        }
+    }
+}
