@@ -237,4 +237,4 @@ FollowedOffer.init({
     await sequelize.sync({alter: true});
 })();
 
-module.exports = {User, CarOffer, Country, Manufactuer};
+module.exports = {User, CarOffer, Country, Manufactuer, FollowedOffer};
