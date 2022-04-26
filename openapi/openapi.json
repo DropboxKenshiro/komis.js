@@ -376,6 +376,7 @@
                     "401": {
                         "description": "Bad token. Request unauthorized."
                     }
+                }
             }
         }
     }
