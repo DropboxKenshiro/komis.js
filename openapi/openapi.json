@@ -304,6 +304,79 @@
                     }
                 }
             }
+        },
+        "/offer/fav/{offerid}": {
+            "post": {
+                "description": "Making offer favourite.",
+                "parameters": [
+                    {
+                        "name": "offerid",
+                        "in": "path",
+                        "description": "Offer's id.",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A notion of a success.",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "success": true
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Failure occured. Probably bad offerId was given.",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "success": false
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Bad token. Request unauthorized."
+                    }
+                }
+            },
+            "delete": {
+                "description": "Making offer not fauvorite, where it already is of course.",
+                "parameters": [
+                    {
+                        "name": "offerid",
+                        "in": "path",
+                        "description": "Offer's id.",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A notion of a success.",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "success": true
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Failure occured. Probably bad offerId was given.",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "success": false
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Bad token. Request unauthorized."
+                    }
+            }
         }
     }
 }
