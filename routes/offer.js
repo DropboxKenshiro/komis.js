@@ -57,7 +57,7 @@ router.get('/:offerid', async function(req, res, next) {
       })
     }
     else {
-      res.status(400).json({
+      res.status(404).json({
         success: false,
         message: "No offer with that id exists"
       })
