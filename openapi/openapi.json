@@ -199,6 +199,26 @@
                 }
             }
         },
+        "/user/validate": {
+            "get": {
+                "description": "Verify a site token. Use as any other endpoint including token in headers.",
+                "responses": {
+                    "200": {
+                        "description": "Token is valid.",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "success":true
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Token invalid."
+                    }
+                }
+            }
+        },
         "/offer/{offerid}": {
             "get": {
                 "description": "Get data of an offer with given id.",
