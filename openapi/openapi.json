@@ -199,7 +199,7 @@
                 }
             }
         },
-        "/user/validate": {
+        "/users/validate": {
             "get": {
                 "description": "Verify a site token. Use as any other endpoint including token in headers.",
                 "responses": {
