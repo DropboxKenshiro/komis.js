@@ -214,24 +214,9 @@ EngineType.hasMany(CarOffer);
 User.hasMany(CarOffer);
 
 class FollowedOffer extends Model{};
-FollowedOffer.init({
-    UserEmail: {
-        type: DataTypes.STRING,
-        primaryKey: true,
-        references: {
-            model: User,
-            key: 'email'
-        }
-    },
-    OfferId: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        references: {
-            model: CarOffer,
-            key: 'offerId'
-        }
-    }
-}, {sequelize});
+FollowedOffer.init({}, {sequelize});
+CarOffer.belongsToMany(User, {as: 'favouriteOffer', through: FollowedOffer});
+User.belongsToMany(CarOffer, {as: 'favouriteOffer', through: FollowedOffer});
 
 (async function () {
     await sequelize.sync({alter: true});
