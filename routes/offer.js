@@ -4,7 +4,70 @@ const passport = require("passport");
 const {Op} = require("sequelize");
 const {locateAddress, geoCoordsDistance} = require("../utils/geo");
 
-const {CarOffer, FollowedOffer} = require("../models/models");
+const {CarOffer, User, FollowedOffer} = require("../models/models");
+
+router.get('/fav', passport.authenticate('jwt', {session: false}), async function (req, res, next) {
+  try {
+    const followed = await CarOffer.findAll({
+      include: {
+        model: User,
+        as: 'favouriteOffer',
+        required: true,
+        attributes: []
+      }
+    });
+    res.status(200).json(followed);
+  }
+  catch (err) {
+    res.status(400).json({
+      success: false,
+      errorType: err.name,
+      errorDescription: err.message
+    })
+  }
+})
+
+router.post('/fav/:offerid', passport.authenticate('jwt', {session: false}), function (req, res, next) {
+  try {
+    FollowedOffer.create({
+      UserEmail: req.user.email,
+      CarOfferOfferId: req.params.offerid
+    });
+
+    res.status(200).json({
+      success: true
+    })
+  }
+  catch (err) {
+    res.status(400).json({
+      success: false,
+      errorType: err.name,
+      errorDescription: err.message
+    })
+  }
+});
+
+router.delete('/fav/:offerid', passport.authenticate('jwt', {session: false}), function (req, res, next) {
+  try {
+    FollowedOffer.delete({
+      where: {
+        UserEmail: req.user.email,
+        CarOfferOfferId: req.params.offerid
+      }
+    });
+
+    res.status(200).json({
+      success: true
+    })
+  }
+  catch (err) {
+    res.status(400).json({
+      success: false,
+      errorType: err.name,
+      errorDescription: err.message
+    })
+  }
+})
 
 router.get('/list', async function (req, res, next) {
   const offerList = await CarOffer.findAll({
@@ -104,48 +167,6 @@ router.post('/', passport.authenticate('jwt', {session: false}), async function(
           }
         )
       }
-})
-
-router.post('/fav/:offerid', passport.authenticate('jwt', {session: false}), function (req, res, next) {
-  try {
-    FollowedOffer.create({
-      UserEmail: req.user.email,
-      OfferId: req.params.offerid
-    });
-
-    res.status(200).json({
-      success: true
-    })
-  }
-  catch (err) {
-    res.status(400).json({
-      success: false,
-      errorType: err.name,
-      errorDescription: err.message
-    })
-  }
-});
-
-router.delete('/fav/:offerid', passport.authenticate('jwt', {session: false}), function (req, res, next) {
-  try {
-    FollowedOffer.delete({
-      where: {
-        UserEmail: req.user.email,
-        OfferId: req.params.offerid
-      }
-    });
-
-    res.status(200).json({
-      success: true
-    })
-  }
-  catch (err) {
-    res.status(400).json({
-      success: false,
-      errorType: err.name,
-      errorDescription: err.message
-    })
-  }
 })
 
 module.exports = router;
