@@ -325,6 +325,53 @@
                 }
             }
         },
+        "/offer/fav": {
+            "get": {
+                "description": "Getting list of fauvorite offers for currently logged user.",
+                "responses": {
+                    "200": {
+                        "description": "Fetched list.",
+                        "content": {
+                            "application/json": {
+                                "example": [
+                                    {
+                                        "offerId": 5,
+                                        "title": "Testuję jeszcze raz",
+                                        "image": null,
+                                        "price": 20000,
+                                        "modelYear": 1999,
+                                        "mileage": 129900,
+                                        "engineCapacity": 2000,
+                                        "description": "Piękne BMW M3 E46 pryma sort",
+                                        "latitude": "52.532951",
+                                        "longitude": "21.686139",
+                                        "createdAt": "2022-04-22T12:36:39.000Z",
+                                        "updatedAt": "2022-04-22T12:36:39.000Z",
+                                        "ManufactuerName": "BMW",
+                                        "CarModelName": "Seria 3 (E46)",
+                                        "EngineTypeName": "Spalinowy",
+                                        "UserEmail": "rafał@brzozowski.net"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Bad token. Request unauthorized."
+                    },
+                    "400": {
+                        "description": "Other kind of failure occured.",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "success": false
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/offer/fav/{offerid}": {
             "post": {
                 "description": "Making offer favourite.",
