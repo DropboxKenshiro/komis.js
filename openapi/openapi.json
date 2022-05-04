@@ -325,6 +325,77 @@
                 }
             }
         },
+        "/offer/list": {
+            "get": {
+                "description": "Get general list of offers with optional filtering.",
+                "requestBody": {
+                    "description": "Filtering parameters. All optional.",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type":"object"
+                            },
+                            "example": {
+                                    "kilometers": 0.2,
+                                    "city": "Łochów",
+                                    "adress": "Mickiewicza 2",
+                                    "priceMin": 1000,
+                                    "priceMax": 100000,
+                                    "yearMin": 1999,
+                                    "yearMax": 2001,
+                                    "mileageMin": 10000,
+                                    "mileageMax": 300000
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "List of matching offers.",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "success": true,
+                                    "list": [
+                                        {
+                                            "offerId": 6,
+                                            "title": "HIT BMW M3 E46",
+                                            "image": null,
+                                            "price": 25000,
+                                            "modelYear": 1999,
+                                            "mileage": 100000,
+                                            "engineCapacity": 2000,
+                                            "description": "Ładniejszy niż poprzednio",
+                                            "latitude": "52.530700",
+                                            "longitude": "21.681820",
+                                            "createdAt": "2022-05-04T12:45:32.000Z",
+                                            "updatedAt": "2022-05-04T12:45:32.000Z",
+                                            "ManufactuerName": "BMW",
+                                            "CarModelName": "Seria 3 (E46)",
+                                            "EngineTypeName": "Spalinowy",
+                                            "UserEmail": "rafał@brzozowski.net"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Bad token. Authentication failed."
+                    },
+                    "400": {
+                        "description": "Failure occured.",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "success": false
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/offer/fav": {
             "get": {
                 "description": "Getting list of fauvorite offers for currently logged user.",
