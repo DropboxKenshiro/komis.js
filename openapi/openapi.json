@@ -372,6 +372,7 @@
                                 "type":"object"
                             },
                             "example": {
+                                    "user": "user@email.com",
                                     "kilometers": 0.2,
                                     "city": "Łochów",
                                     "adress": "Mickiewicza 2",
