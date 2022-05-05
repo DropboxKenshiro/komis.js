@@ -135,6 +135,35 @@ router.get('/:offerid', async function(req, res, next) {
   
 })
 
+router.delete('/:offerid', passport.authenticate('jwt', {session: false}), async function(req, res, next) {
+  try {
+    const numDeleted = await CarOffer.destroy({
+      where: {
+        offerId: req.params.offerid,
+        UserEmail: req.user.email
+      }
+    })
+
+    if(numDeleted === 0) {
+      res.status(404).json({
+        success: false
+      })
+    }
+    else {
+      res.status(200).json({success: true})
+    }
+  }
+  catch (err) {
+    res.status(400).json(
+      {
+        success: false,
+        errorType: err.name,
+        errorDescription: err.message
+      }
+    )
+  }
+})
+
 router.post('/', passport.authenticate('jwt', {session: false}), async function(req, res, next) {
     try {
         const addressLocation = await locateAddress(req.body.city, req.body.address)
