@@ -268,6 +268,42 @@
                         "description": "Bad request."
                     }
                 }
+            },
+            "delete": {
+                "description": "Delete an existing offer.",
+                "parameters": [
+                    {
+                        "name": "offerid",
+                        "in": "path",
+                        "description": "Offer's id.",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description":"A notion of a success.",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "success": true
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Offer with said id doesn't exist or offer with said id isn't that user's",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "success": false
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Failure occured."
+                    }
+                }
             }
         },
         "/offer": {
