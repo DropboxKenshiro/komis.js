@@ -83,7 +83,8 @@ router.get('/list', async function (req, res, next) {
       mileage: {
         [Op.gte]: req.body.mileageMin ? req.body.mileageMin : 0,
         [Op.lte]: req.body.mileageMax ? req.body.mileageMax : Number.MAX_SAFE_INTEGER
-      }
+      },
+      UserEmail: req.body.user
     }
   })
 
