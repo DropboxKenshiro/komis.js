@@ -237,18 +237,20 @@
                             "application/json": {
                                 "example": {
                                     "success": true,
-                                    "offerId": 5,
+                                    "id": 6,
                                     "userEmail": "rafał@brzozowski.net",
-                                    "title": "Testuję jeszcze raz",
+                                    "title": "HIT BMW M3 E46",
+                                    "image": null,
                                     "manufactuer": "BMW",
                                     "carModel": "Seria 3 (E46)",
-                                    "modelYear": 1999,
+                                    "year": 1999,
                                     "engineType": "Spalinowy",
                                     "engineCapacity": 2000,
-                                    "mileage": 129900,
-                                    "description": "Piękne BMW M3 E46 pryma sort",
-                                    "latitude": "52.532951",
-                                    "longitude": "21.686139"
+                                    "mileage": 100000,
+                                    "price": 25000,
+                                    "description": "Ładniejszy niż poprzednio",
+                                    "lat": "52.530700",
+                                    "lng": "21.681820"
                                 }
                             }
                         }
@@ -317,17 +319,21 @@
                                 "type": "object"
                             },
                             "example": {
+                                "success": true,
+                                "id": 6,
+                                "userEmail": "rafał@brzozowski.net",
+                                "title": "HIT BMW M3 E46",
+                                "image": null,
                                 "manufactuer": "BMW",
                                 "carModel": "Seria 3 (E46)",
-                                "title": "Testuję jeszcze raz",
-                                "price": 20000,
-                                "modelYear": 1999,
-                                "mileage": 129900,
-                                "engineCapacity": 2000,
+                                "year": 1999,
                                 "engineType": "Spalinowy",
-                                "description": "Piękne BMW M3 E46 pryma sort",
-                                "city": "Łochów",
-                                "adress": "al. Łochowska 1"
+                                "engineCapacity": 2000,
+                                "mileage": 100000,
+                                "price": 25000,
+                                "description": "Ładniejszy niż poprzednio",
+                                "lat": "52.530700",
+                                "lng": "21.681820"
                             }
                         }
                     }

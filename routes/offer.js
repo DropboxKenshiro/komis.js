@@ -106,18 +106,20 @@ router.get('/:offerid', async function(req, res, next) {
     if(offerInfo != null) {
       res.status(200).json({
         success: true,
-        offerId: offerInfo.offerId,
+        id: offerInfo.offerId,
         userEmail: offerInfo.UserEmail,
         title: offerInfo.title,
+        image: offerInfo.image,
         manufactuer: offerInfo.ManufactuerName,
         carModel: offerInfo.CarModelName,
-        modelYear: offerInfo.modelYear,
+        year: offerInfo.modelYear,
         engineType: offerInfo.EngineTypeName,
         engineCapacity: offerInfo.engineCapacity,
         mileage: offerInfo.mileage,
+        price: offerInfo.price,
         description: offerInfo.description,
-        latitude: offerInfo.latitude,
-        longitude: offerInfo.longitude
+        lat: offerInfo.latitude,
+        lng: offerInfo.longitude
       })
     }
     else {
