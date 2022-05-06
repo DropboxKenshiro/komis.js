@@ -21,6 +21,7 @@ router.post('/register', async function(req, res, next) {
       lastName: req.body.lastName,
       dateOfBirth: req.body.dateOfBirth,
       adressString: req.body.adressString,
+      phoneNumber: req.body.phoneNumber,
       zipCode: req.body.zipCode,
       location: req.body.location,
       description: req.body.description
@@ -49,7 +50,7 @@ router.post('/login', passport.authenticate('local', {session: false}), function
   });
 })
 
-router.post('/validate', passport.authenticate('jwt', {session: false}), function(req, res, next) {
+router.get('/validate', passport.authenticate('jwt', {session: false}), function(req, res, next) {
   res.status(200).json({success: true});
 })
 
@@ -65,6 +66,7 @@ router.get('/info/:uemail', async function(req, res, next) {
       dateOfBirth: userInfo.dateOfBirth,
       adressString: userInfo.adressString,
       zipCode: userInfo.zipCode,
+      phoneNumber: userInfo.phoneNumber,
       location: userInfo.location,
       phoneNumber: userInfo.phoneNumber
     })
