@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const passport = require("passport");
-const {Op} = require("sequelize");
+const {Op, where} = require("sequelize");
 const {locateAddress, geoCoordsDistance} = require("../utils/geo");
 const {makeErrorJson} = require("../utils/misc");
 
@@ -65,32 +65,35 @@ router.delete('/fav/:offerid', passport.authenticate('jwt', {session: false}), a
 });
 
 router.get('/list', async function (req, res, next) {
+  const whereObj = {price: {
+    [Op.gte]: req.body.priceMin ? req.body.priceMin : 0,
+    [Op.lte]: req.body.priceMax ? req.body.priceMax : Number.MAX_SAFE_INTEGER
+  },
+  modelYear: {
+    [Op.gte]: req.body.yearMin ? req.body.yearMin : 0,
+    [Op.lte]: req.body.yearMax ? req.body.yearMax : Number.MAX_SAFE_INTEGER
+  },
+  mileage: {
+    [Op.gte]: req.body.mileageMin ? req.body.mileageMin : 0,
+    [Op.lte]: req.body.mileageMax ? req.body.mileageMax : Number.MAX_SAFE_INTEGER
+  }}
+
+  if(req.body.user) whereObj["UserEmail"] = req.body.user;
+
   const offerList = await CarOffer.findAll({
-    where: {
-      price: {
-        [Op.gte]: req.body.priceMin ? req.body.priceMin : 0,
-        [Op.lte]: req.body.priceMax ? req.body.priceMax : Number.MAX_SAFE_INTEGER
-      },
-      modelYear: {
-        [Op.gte]: req.body.yearMin ? req.body.yearMin : 0,
-        [Op.lte]: req.body.yearMax ? req.body.yearMax : Number.MAX_SAFE_INTEGER
-      },
-      mileage: {
-        [Op.gte]: req.body.mileageMin ? req.body.mileageMin : 0,
-        [Op.lte]: req.body.mileageMax ? req.body.mileageMax : Number.MAX_SAFE_INTEGER
-      },
-      UserEmail: req.body.user
-    }
+    where: whereObj
   });
 
   // eliminiate all offers that are farther than specified kilometer limit
   // this is kinda kinky to implement in sequelize, maybe we can change that in the future
-  const reqPos = await locateAddress(req.body.city, req.body.address);
-  const offerListFiltered = offerList.filter(o => (geoCoordsDistance(reqPos, [o.latitude, o.longitude]))/1000 <= req.body.kilometers);
+  if (req.body.city && req.body.address) {
+    const reqPos = await locateAddress(req.body.city, req.body.address);
+    offerList = offerList.filter(o => (geoCoordsDistance(reqPos, [o.latitude, o.longitude]))/1000 <= req.body.kilometers);
+  }
 
   res.status(200).json({
     success: true,
-    list: offerListFiltered
+    list: offerList
   });
 })
 
