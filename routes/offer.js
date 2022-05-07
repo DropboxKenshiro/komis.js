@@ -3,6 +3,7 @@ const router = express.Router();
 const passport = require("passport");
 const {Op} = require("sequelize");
 const {locateAddress, geoCoordsDistance} = require("../utils/geo");
+const {makeErrorJson} = require("../utils/misc");
 
 const {CarOffer, User, FollowedOffer} = require("../models/models");
 
@@ -19,11 +20,7 @@ router.get('/fav', passport.authenticate('jwt', {session: false}), async functio
     res.status(200).json(followed);
   }
   catch (err) {
-    res.status(400).json({
-      success: false,
-      errorType: err.name,
-      errorDescription: err.message
-    });
+    res.status(400).json(makeErrorJson(err));
   }
 });
 
@@ -39,11 +36,7 @@ router.post('/fav/:offerid', passport.authenticate('jwt', {session: false}), fun
     });
   }
   catch (err) {
-    res.status(400).json({
-      success: false,
-      errorType: err.name,
-      errorDescription: err.message
-    });
+    res.status(400).json(makeErrorJson(err));
   }
 });
 
@@ -61,11 +54,7 @@ router.delete('/fav/:offerid', passport.authenticate('jwt', {session: false}), f
     });
   }
   catch (err) {
-    res.status(400).json({
-      success: false,
-      errorType: err.name,
-      errorDescription: err.message
-    });
+    res.status(400).json(makeErrorJson(err));
   }
 });
 
@@ -130,10 +119,7 @@ router.get('/:offerid', async function(req, res, next) {
     }
   }
   catch (err) {
-    res.status(400).json({
-      success: false,
-      message: err.message
-    });
+    res.status(400).json(makeErrorJson(err));
   }
   
 })
@@ -157,13 +143,7 @@ router.delete('/:offerid', passport.authenticate('jwt', {session: false}), async
     }
   }
   catch (err) {
-    res.status(400).json(
-      {
-        success: false,
-        errorType: err.name,
-        errorDescription: err.message
-      }
-    );
+    res.status(400).json(makeErrorJson(err));
   }
 });
 
@@ -191,13 +171,7 @@ router.post('/', passport.authenticate('jwt', {session: false}), async function(
         });
     }
     catch (err) {
-        res.status(400).json(
-          {
-            success: false,
-            errorType: err.name,
-            errorDescription: err.message
-          }
-        );
+        res.status(400).json(makeErrorJson(err));
       }
 });
 

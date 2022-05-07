@@ -6,6 +6,7 @@ var express = require('express');
 var router = express.Router();
 var {User} = require('../models/models');
 var {issueToken} = require('../utils/auth');
+var {makeErrorJson} = require('../utils/misc');
 
 router.post('/register', async function(req, res, next) {
   try {
@@ -33,13 +34,7 @@ router.post('/register', async function(req, res, next) {
     );
   }
   catch (err) {
-    res.status(400).json(
-      {
-        success: false,
-        errorType: err.name,
-        errorDescription: err.message
-      }
-    );
+    res.status(400).json(makeErrorJson(err));
   }
 });
 
@@ -101,13 +96,7 @@ router.patch('/edit/:uemail', passport.authenticate('jwt', {session: false}), as
     }});
   }
   catch (err) {
-    res.status(400).json(
-      {
-        success: false,
-        errorType: err.name,
-        errorDescription: err.message
-      }
-    );
+    res.status(400).json(makeErrorJson(err));
   }
 
   res.status(200).json({
