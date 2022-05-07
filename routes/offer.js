@@ -23,9 +23,9 @@ router.get('/fav', passport.authenticate('jwt', {session: false}), async functio
       success: false,
       errorType: err.name,
       errorDescription: err.message
-    })
+    });
   }
-})
+});
 
 router.post('/fav/:offerid', passport.authenticate('jwt', {session: false}), function (req, res, next) {
   try {
@@ -36,14 +36,14 @@ router.post('/fav/:offerid', passport.authenticate('jwt', {session: false}), fun
 
     res.status(200).json({
       success: true
-    })
+    });
   }
   catch (err) {
     res.status(400).json({
       success: false,
       errorType: err.name,
       errorDescription: err.message
-    })
+    });
   }
 });
 
@@ -58,16 +58,16 @@ router.delete('/fav/:offerid', passport.authenticate('jwt', {session: false}), f
 
     res.status(200).json({
       success: true
-    })
+    });
   }
   catch (err) {
     res.status(400).json({
       success: false,
       errorType: err.name,
       errorDescription: err.message
-    })
+    });
   }
-})
+});
 
 router.get('/list', async function (req, res, next) {
   const offerList = await CarOffer.findAll({
@@ -86,7 +86,7 @@ router.get('/list', async function (req, res, next) {
       },
       UserEmail: req.body.user
     }
-  })
+  });
 
   // eliminiate all offers that are farther than specified kilometer limit
   // this is kinda kinky to implement in sequelize, maybe we can change that in the future
@@ -120,20 +120,20 @@ router.get('/:offerid', async function(req, res, next) {
         description: offerInfo.description,
         lat: offerInfo.latitude,
         lng: offerInfo.longitude
-      })
+      });
     }
     else {
       res.status(404).json({
         success: false,
         message: "No offer with that id exists"
-      })
+      });
     }
   }
   catch (err) {
     res.status(400).json({
       success: false,
       message: err.message
-    })
+    });
   }
   
 })
@@ -145,12 +145,12 @@ router.delete('/:offerid', passport.authenticate('jwt', {session: false}), async
         offerId: req.params.offerid,
         UserEmail: req.user.email
       }
-    })
+    });
 
     if(numDeleted === 0) {
       res.status(404).json({
         success: false
-      })
+      });
     }
     else {
       res.status(200).json({success: true})
@@ -163,9 +163,9 @@ router.delete('/:offerid', passport.authenticate('jwt', {session: false}), async
         errorType: err.name,
         errorDescription: err.message
       }
-    )
+    );
   }
-})
+});
 
 router.post('/', passport.authenticate('jwt', {session: false}), async function(req, res, next) {
     try {
@@ -188,7 +188,7 @@ router.post('/', passport.authenticate('jwt', {session: false}), async function(
         });
         res.status(200).json({
             success: true
-        })
+        });
     }
     catch (err) {
         res.status(400).json(
@@ -197,8 +197,8 @@ router.post('/', passport.authenticate('jwt', {session: false}), async function(
             errorType: err.name,
             errorDescription: err.message
           }
-        )
+        );
       }
-})
+});
 
 module.exports = router;

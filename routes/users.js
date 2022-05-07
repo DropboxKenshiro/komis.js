@@ -30,7 +30,7 @@ router.post('/register', async function(req, res, next) {
       {
         success: true
       }
-    )
+    );
   }
   catch (err) {
     res.status(400).json(
@@ -39,7 +39,7 @@ router.post('/register', async function(req, res, next) {
         errorType: err.name,
         errorDescription: err.message
       }
-    )
+    );
   }
 });
 
@@ -48,11 +48,11 @@ router.post('/login', passport.authenticate('local', {session: false}), function
     success: true,
     jwtToken: issueToken(req.body.email)
   });
-})
+});
 
 router.get('/validate', passport.authenticate('jwt', {session: false}), function(req, res, next) {
   res.status(200).json({success: true});
-})
+});
 
 router.get('/info/:uemail', async function(req, res, next) {
   const userInfo = await User.findByPk(req.params.uemail);
@@ -69,14 +69,14 @@ router.get('/info/:uemail', async function(req, res, next) {
       phoneNumber: userInfo.phoneNumber,
       location: userInfo.location,
       phoneNumber: userInfo.phoneNumber
-    })
+    });
   }
   else {
     res.status(400).json({
       success: false
-    })
+    });
   }
-})
+});
 
 router.patch('/edit/:uemail', passport.authenticate('jwt', {session: false}), async function(req, res, next) {
   // protection,  password should be changed by separate endpoint, salt should never be changed manually
@@ -84,7 +84,7 @@ router.patch('/edit/:uemail', passport.authenticate('jwt', {session: false}), as
     res.status(403).json({
       success: false,
       message: "Illegal properties"
-    })
+    });
     return;
   }
   // check if user changes its data
@@ -92,7 +92,7 @@ router.patch('/edit/:uemail', passport.authenticate('jwt', {session: false}), as
     res.status(401).json({
       success: false,
       message: "Unauthorized"
-    })
+    });
   }
 
   try {
@@ -107,12 +107,12 @@ router.patch('/edit/:uemail', passport.authenticate('jwt', {session: false}), as
         errorType: err.name,
         errorDescription: err.message
       }
-    )
+    );
   }
 
   res.status(200).json({
     success: true
-  })
-})
+  });
+});
 
 module.exports = router;
