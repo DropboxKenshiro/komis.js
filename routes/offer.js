@@ -27,7 +27,7 @@ router.get('/fav', passport.authenticate('jwt', {session: false}), async functio
 router.post('/fav/:offerid', passport.authenticate('jwt', {session: false}), async function (req, res, next) {
   const transaction = await sequelize.transaction();
   try {
-    FollowedOffer.create({
+    await FollowedOffer.create({
       UserEmail: req.user.email,
       CarOfferOfferId: req.params.offerid
     }, {transaction: transaction});
@@ -104,20 +104,20 @@ router.get('/:offerid', async function(req, res, next) {
     if(offerInfo != null) {
       res.status(200).json({
         success: true,
-        id: offerInfo.offerId,
-        userEmail: offerInfo.UserEmail,
+        offerId: offerInfo.offerId,
+        UserEmail: offerInfo.UserEmail,
         title: offerInfo.title,
         image: offerInfo.image,
-        manufactuer: offerInfo.ManufactuerName,
-        carModel: offerInfo.CarModelName,
-        year: offerInfo.modelYear,
-        engineType: offerInfo.EngineTypeName,
+        ManufactuerName: offerInfo.ManufactuerName,
+        CarModelName: offerInfo.CarModelName,
+        modelYear: offerInfo.modelYear,
+        EngineTypeName: offerInfo.EngineTypeName,
         engineCapacity: offerInfo.engineCapacity,
         mileage: offerInfo.mileage,
         price: offerInfo.price,
         description: offerInfo.description,
-        lat: offerInfo.latitude,
-        lng: offerInfo.longitude
+        latiture: offerInfo.latitude,
+        longitude: offerInfo.longitude
       });
     }
     else {
