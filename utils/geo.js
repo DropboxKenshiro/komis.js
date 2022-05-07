@@ -5,7 +5,7 @@ async function locateAddress(cityName, streetName) {
     const options = {
         params: {
         key: process.env.MAPS_API_KEY,
-        address: `${streetName}, ${cityName}`
+        address: `${streetName}${streetName !== null ? ',' : ''}${cityName}`
         }
     }
     const geodata = await client.geocode(options);
