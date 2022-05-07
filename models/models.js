@@ -222,4 +222,4 @@ User.belongsToMany(CarOffer, {as: 'favouriteOffer', through: FollowedOffer});
     await sequelize.sync({alter: true});
 })();
 
-module.exports = {User, CarOffer, Country, Manufactuer, FollowedOffer};
+module.exports = {sequelize, User, CarOffer, Country, Manufactuer, FollowedOffer};
