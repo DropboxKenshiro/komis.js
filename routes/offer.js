@@ -5,7 +5,7 @@ const {Op} = require("sequelize");
 const {locateAddress, geoCoordsDistance} = require("../utils/geo");
 const {makeErrorJson} = require("../utils/misc");
 
-const {CarOffer, User, FollowedOffer} = require("../models/models");
+const {sequelize, CarOffer, User, FollowedOffer} = require("../models/models");
 
 router.get('/fav', passport.authenticate('jwt', {session: false}), async function (req, res, next) {
   try {
@@ -24,36 +24,42 @@ router.get('/fav', passport.authenticate('jwt', {session: false}), async functio
   }
 });
 
-router.post('/fav/:offerid', passport.authenticate('jwt', {session: false}), function (req, res, next) {
+router.post('/fav/:offerid', passport.authenticate('jwt', {session: false}), async function (req, res, next) {
+  const transaction = await sequelize.transaction();
   try {
     FollowedOffer.create({
       UserEmail: req.user.email,
       CarOfferOfferId: req.params.offerid
-    });
+    }, {transaction: transaction});
 
+    await transaction.commit();
     res.status(200).json({
       success: true
     });
   }
   catch (err) {
+    await transaction.rollback();
     res.status(400).json(makeErrorJson(err));
   }
 });
 
-router.delete('/fav/:offerid', passport.authenticate('jwt', {session: false}), function (req, res, next) {
+router.delete('/fav/:offerid', passport.authenticate('jwt', {session: false}), async function (req, res, next) {
+  const transaction = await sequelize.transaction();
   try {
-    FollowedOffer.delete({
+    await FollowedOffer.delete({
       where: {
         UserEmail: req.user.email,
         CarOfferOfferId: req.params.offerid
       }
-    });
+    }, {transaction: transaction});
 
+    await transaction.commit();
     res.status(200).json({
       success: true
     });
   }
   catch (err) {
+    await transaction.rollback();
     res.status(400).json(makeErrorJson(err));
   }
 });
@@ -125,6 +131,7 @@ router.get('/:offerid', async function(req, res, next) {
 })
 
 router.delete('/:offerid', passport.authenticate('jwt', {session: false}), async function(req, res, next) {
+  const transaction = await sequelize.transaction();
   try {
     const numDeleted = await CarOffer.destroy({
       where: {
@@ -132,6 +139,7 @@ router.delete('/:offerid', passport.authenticate('jwt', {session: false}), async
         UserEmail: req.user.email
       }
     });
+    await transaction.commit();
 
     if(numDeleted === 0) {
       res.status(404).json({
@@ -139,17 +147,19 @@ router.delete('/:offerid', passport.authenticate('jwt', {session: false}), async
       });
     }
     else {
-      res.status(200).json({success: true})
+      res.status(200).json({success: true});
     }
   }
   catch (err) {
+    await transaction.rollback();
     res.status(400).json(makeErrorJson(err));
   }
 });
 
 router.post('/', passport.authenticate('jwt', {session: false}), async function(req, res, next) {
+    const transaction = await sequelize.transaction();
     try {
-        const addressLocation = await locateAddress(req.body.city, req.body.address)
+        const addressLocation = await locateAddress(req.body.city, req.body.address);
 
         await CarOffer.create({
             UserEmail: req.user.email,
@@ -166,11 +176,13 @@ router.post('/', passport.authenticate('jwt', {session: false}), async function(
             latitude: addressLocation[0],
             longitude: addressLocation[1]
         });
+        await transaction.commit();
         res.status(200).json({
             success: true
         });
     }
     catch (err) {
+        await transaction.rollback();
         res.status(400).json(makeErrorJson(err));
       }
 });

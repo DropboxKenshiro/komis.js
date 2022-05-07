@@ -4,11 +4,12 @@ var passport = require("passport")
 
 var express = require('express');
 var router = express.Router();
-var {User} = require('../models/models');
+var {sequelize, User} = require('../models/models');
 var {issueToken} = require('../utils/auth');
 var {makeErrorJson} = require('../utils/misc');
 
 router.post('/register', async function(req, res, next) {
+  const transaction = await sequelize.transaction();
   try {
     const hasher = crypto.createHash('sha256');
     const saltUUID = crypto.randomUUID();
@@ -26,7 +27,8 @@ router.post('/register', async function(req, res, next) {
       zipCode: req.body.zipCode,
       location: req.body.location,
       description: req.body.description
-    });
+    }, {transaction: transaction});
+    await transaction.commit();
     res.status(200).json(
       {
         success: true
@@ -34,6 +36,7 @@ router.post('/register', async function(req, res, next) {
     );
   }
   catch (err) {
+    await transaction.rollback();
     res.status(400).json(makeErrorJson(err));
   }
 });
@@ -90,12 +93,15 @@ router.patch('/edit/:uemail', passport.authenticate('jwt', {session: false}), as
     });
   }
 
+  const transaction = await sequelize.transaction();
   try {
     await User.update(req.body, {where: {
       email: req.params.uemail
-    }});
+    }, transaction: transaction});
+    await transaction.commit();
   }
   catch (err) {
+    await transaction.rollback();
     res.status(400).json(makeErrorJson(err));
   }
 
