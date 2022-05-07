@@ -15,6 +15,11 @@ async function locateAddress(cityName, streetName) {
 const geoDegree = 111200; // in meters
 
 function geoCoordsDistance(firstPoint, secondPoint) {
+    /*
+    This function uses simplified model, treating Earth as a plane, calculating difference
+    in degrees and converting it into meters.
+    For distances around these like on our site, this approximations should be enough.
+    */
     return Math.sqrt(Math.pow(secondPoint[0]-firstPoint[0],2)+Math.pow(secondPoint[1]-firstPoint[1],2)) * geoDegree;
 }
 
