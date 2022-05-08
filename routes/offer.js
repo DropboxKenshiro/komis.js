@@ -46,7 +46,7 @@ router.post('/fav/:offerid', passport.authenticate('jwt', {session: false}), asy
 router.delete('/fav/:offerid', passport.authenticate('jwt', {session: false}), async function (req, res, next) {
   const transaction = await sequelize.transaction();
   try {
-    await FollowedOffer.delete({
+    await FollowedOffer.destroy({
       where: {
         UserEmail: req.user.email,
         CarOfferOfferId: req.params.offerid
