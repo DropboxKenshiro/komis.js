@@ -6,6 +6,7 @@ const {locateAddress, geoCoordsDistance} = require("../utils/geo");
 const {makeErrorJson} = require("../utils/misc");
 
 const {sequelize, CarOffer, User, FollowedOffer} = require("../models/models");
+const req = require("express/lib/request");
 
 router.get('/fav', passport.authenticate('jwt', {session: false}), async function (req, res, next) {
   try {
@@ -64,21 +65,26 @@ router.delete('/fav/:offerid', passport.authenticate('jwt', {session: false}), a
   }
 });
 
+function isIncluded(val) {
+  return (val !== null && val !== undefined && val !== 'null');
+}
+
 router.get('/list', async function (req, res, next) {
+  console.log(req.query);
   const whereObj = {price: {
-    [Op.gte]: req.body.priceMin ? req.body.priceMin : 0,
-    [Op.lte]: req.body.priceMax ? req.body.priceMax : Number.MAX_SAFE_INTEGER
+    [Op.gte]: isIncluded(req.query.priceMin) ? req.query.priceMin : 0,
+    [Op.lte]: isIncluded(req.query.priceMax) ? req.query.priceMax : Number.MAX_SAFE_INTEGER
   },
   modelYear: {
-    [Op.gte]: req.body.yearMin ? req.body.yearMin : 0,
-    [Op.lte]: req.body.yearMax ? req.body.yearMax : Number.MAX_SAFE_INTEGER
+    [Op.gte]: isIncluded(req.query.yearMin) ? req.query.yearMin : 0,
+    [Op.lte]: isIncluded(req.query.yearMax) ? req.query.yearMax : Number.MAX_SAFE_INTEGER
   },
   mileage: {
-    [Op.gte]: req.body.mileageMin ? req.body.mileageMin : 0,
-    [Op.lte]: req.body.mileageMax ? req.body.mileageMax : Number.MAX_SAFE_INTEGER
+    [Op.gte]: isIncluded(req.query.mileageMin) ? req.query.mileageMin : 0,
+    [Op.lte]: isIncluded(req.query.mileageMax) ? req.query.mileageMax : Number.MAX_SAFE_INTEGER
   }}
 
-  if(req.body.user) whereObj["UserEmail"] = req.body.user;
+  if (isIncluded(req.query.user)) whereObj["UserEmail"] = req.query.user;
 
   const offerList = await CarOffer.findAll({
     where: whereObj
@@ -86,9 +92,9 @@ router.get('/list', async function (req, res, next) {
 
   // eliminiate all offers that are farther than specified kilometer limit
   // this is kinda kinky to implement in sequelize, maybe we can change that in the future
-  if (req.body.city && req.body.address) {
-    const reqPos = await locateAddress(req.body.city, req.body.address);
-    offerList = offerList.filter(o => (geoCoordsDistance(reqPos, [o.latitude, o.longitude]))/1000 <= req.body.kilometers);
+  if (req.query.city && req.query.address) {
+    const reqPos = await locateAddress(req.query.city, req.query.address);
+    offerList = offerList.filter(o => (geoCoordsDistance(reqPos, [o.latitude, o.longitude]))/1000 <= req.query.kilometers);
   }
 
   res.status(200).json({
