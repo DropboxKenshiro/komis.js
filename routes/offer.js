@@ -176,7 +176,7 @@ router.post('/', passport.authenticate('jwt', {session: false}), async function(
             title: req.body.title,
             image: req.body.image,
             ManufactuerName: req.body.manufactuer,
-            EngineTypeName: req.body.engineType,
+            EngineTypeName: req.body.engineTypeName,
             CarModelName: req.body.carModel,
             price: req.body.price,
             modelYear: req.body.modelYear,
