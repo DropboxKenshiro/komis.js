@@ -2,8 +2,8 @@ const { findPlaceFromText } = require("@googlemaps/google-maps-services-js/dist/
 const {Sequelize, DataTypes, Model} = require("sequelize");
 const sequelize = new Sequelize('komisjs', 'komisdb', 'example123', {host: 'mariadb', dialect: 'mariadb'});
 
-const allCharRegex = /^[\p{L}0-9]+$/iu;
-const allWordRegex = /^[\p{L}\s0-9]+$/iu;
+const allCharRegex = /^[\p{L}0-9,.()!%@;:'"/?]+$/iu;
+const allWordRegex = /^[\p{L}\s0-9,.()!%@;:'"/?]+$/iu;
 
 class User extends Model {};
 User.init({
