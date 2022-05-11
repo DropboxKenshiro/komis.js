@@ -328,7 +328,7 @@
                                 "manufactuer": "BMW",
                                 "carModel": "Seria 3 (E46)",
                                 "year": 1999,
-                                "engineTypeName": "Spalinowy",
+                                "EngineTypeName": "Spalinowy",
                                 "engineCapacity": 2000,
                                 "mileage": 100000,
                                 "price": 25000,
