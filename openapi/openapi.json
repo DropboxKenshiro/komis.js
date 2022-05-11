@@ -590,6 +590,49 @@
                     }
                 }
             }
+        },
+        "/meta/countries": {
+            "get": {
+                "description": "Get a list of all countries that are in the database.",
+                "responses": {
+                    "200": {
+                        "description": "A list of possible countries.",
+                        "content": {
+                            "application/json": {
+                                "example": [
+                                    "Czechy",
+                                    "Francja",
+                                    "Hiszpania",
+                                    "Niemcy",
+                                    "Stany Zjednoczone",
+                                    "Wielka Brytania",
+                                    "Włochy"
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/meta/engines": {
+            "get": {
+                "description": "Get a list of all engine types that are in the database.",
+                "responses": {
+                    "200": {
+                        "description": "A list of possible engine types.",
+                        "content": {
+                            "application/json": {
+                                "example": [
+                                    "Diesel",
+                                    "Elektryczny",
+                                    "Spalinowy"
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
         }
+        
     }
 }
