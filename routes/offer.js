@@ -16,6 +16,9 @@ router.get('/fav', passport.authenticate('jwt', {session: false}), async functio
         as: 'favouriteOffer',
         required: true,
         attributes: []
+      },
+      where: {
+        UserEmail: req.user.email
       }
     });
     res.status(200).json(followed);
