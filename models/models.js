@@ -215,8 +215,8 @@ User.hasMany(CarOffer);
 
 class FollowedOffer extends Model{};
 FollowedOffer.init({}, {sequelize});
-CarOffer.belongsToMany(User, {as: 'favouriteOffer', through: FollowedOffer});
-User.belongsToMany(CarOffer, {as: 'favouriteOffer', through: FollowedOffer});
+FollowedOffer.belongsTo(CarOffer);
+FollowedOffer.belongsTo(User);
 
 (async function () {
     await sequelize.sync({alter: true});
