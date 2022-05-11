@@ -10,18 +10,16 @@ const req = require("express/lib/request");
 
 router.get('/fav', passport.authenticate('jwt', {session: false}), async function (req, res, next) {
   try {
-    const followed = await CarOffer.findAll({
+    const followed = await FollowedOffer.findAll({
       include: {
-        model: User,
-        as: 'favouriteOffer',
-        required: true,
-        attributes: []
+        model: CarOffer,
+        required: true
       },
       where: {
         UserEmail: req.user.email
       }
     });
-    res.status(200).json(followed);
+    res.status(200).json(followed.map(x => x["CarOffer"]));
   }
   catch (err) {
     res.status(400).json(makeErrorJson(err));
