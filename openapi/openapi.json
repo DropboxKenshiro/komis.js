@@ -272,6 +272,71 @@
                     }
                 }
             },
+            "patch": {
+                "description": "Modify offer's data.",
+                "parameters": [
+                    {
+                        "name": "offerid",
+                        "in": "path",
+                        "description": "Offer's id.",
+                        "required": true
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            },
+                            "example": {
+                                "title": "HIT BMW M3 E46",
+                                "image": null,
+                                "manufactuer": "BMW",
+                                "carModel": "Seria 3 (E46)",
+                                "year": 1999,
+                                "engineType": "Spalinowy",
+                                "engineCapacity": 2000,
+                                "mileage": 100000,
+                                "price": 25000,
+                                "description": "Ładniejszy niż poprzednio"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Data successfully edited.",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "success": true
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "User tried to change data of another user's offer, not his.",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "success": false,
+                                    "message": "Unauthorized"
+                                  }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Failure occured.",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "success": false
+                                }
+                            }
+                        }
+                    }
+                }
+            },
             "delete": {
                 "description": "Delete an existing offer.",
                 "parameters": [
