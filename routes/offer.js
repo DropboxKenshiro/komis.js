@@ -137,8 +137,51 @@ router.get('/:offerid', async function(req, res, next) {
   catch (err) {
     res.status(400).json(makeErrorJson(err));
   }
-  
-})
+});
+
+router.patch('/:offerid', passport.authenticate('jwt', {session: false}), async function(req, res, next) {
+  try {
+    const userCheckFetch = await CarOffer.findByPk(req.params.offerid);
+    if(userCheckFetch.UserEmail !== req.user.email) {
+      res.status(401).json({
+        success: false,
+        message: "Unauthorized"
+      })
+    }
+  }
+  catch (err) {
+    res.status(400).json(makeErrorJson(err))
+  }
+
+  editQuery = {};
+  if(isIncluded(req.body.image)) editQuery.image = req.body.image;
+  if(isIncluded(req.body.price)) editQuery.price = req.body.price;
+  if(isIncluded(req.body.modelYear)) editQuery.modelYear = req.body.modelYear;
+  if(isIncluded(req.body.mileage)) editQuery.mileage = req.body.mileage;
+  if(isIncluded(req.body.engineCapacity)) editQuery.engineCapacity = req.body.engineCapacity;
+  if(isIncluded(req.body.description)) editQuery.description = req.body.description;
+  if(isIncluded(req.body.ManufactuerName)) editQuery.ManufactuerName = req.body.ManufactuerName;
+  if(isIncluded(req.body.EngineTypeName)) editQuery.EngineTypeName = req.body.EngineTypeName;
+  if(isIncluded(req.body.title)) editQuery.title = req.body.title;
+
+  const transaction = await sequelize.transaction();
+  try {
+    await CarOffer.update(editQuery, {
+      where: {
+        offerId: req.params.offerid
+      },
+      transaction: transaction
+    });
+    transaction.commit();
+    res.status(200).json({
+      success: true
+    })
+  }
+  catch (err) {
+    transaction.rollback();
+    res.status(400).json(makeErrorJson(err))
+  }
+});
 
 router.delete('/:offerid', passport.authenticate('jwt', {session: false}), async function(req, res, next) {
   const transaction = await sequelize.transaction();
