@@ -206,8 +206,21 @@ CarOffer.init({
             max: 180,
             min: -180
         }
+    },
+    city: {
+        type: DataTypes.STRING(50),
+        validate: {
+            is: allWordRegex
+        }
+    },
+    street: {
+        type: DataTypes.STRING(50),
+        validate: {
+            is: allWordRegex
+        }
     }}, {sequelize});
 
+Country.hasMany(CarOffer);
 Manufactuer.hasMany(CarOffer);
 CarModel.hasMany(CarOffer);
 EngineType.hasMany(CarOffer);
