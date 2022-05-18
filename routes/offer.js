@@ -1,12 +1,36 @@
 const express = require("express");
 const router = express.Router();
 const passport = require("passport");
-const {Op, where} = require("sequelize");
+const mailjetLib = require("node-mailjet");
+const {Op, where, QueryError} = require("sequelize");
 const {locateAddress, geoCoordsDistance} = require("../utils/geo");
 const {makeErrorJson} = require("../utils/misc");
 
 const {sequelize, CarOffer, User, FollowedOffer} = require("../models/models");
 const req = require("express/lib/request");
+
+const mailjet = mailjetLib.connect(process.env.MAILJET_KEY, process.env.MAILJET_SECRET);
+
+async function sendMail(targetUser, subject, content) {
+  await mailjet.post('send', {version: 'v3.1'}).request({
+    Messages: [
+      {
+        From: {
+          Email: 'jatujestem144@gmail.com',
+          Name: "komis.js"
+        },
+        To: [
+          {
+            Email: targetUser,
+            Name: "You"
+          }
+        ],
+        Subject: subject,
+        TextPart: content
+      }
+    ]
+  });
+}
 
 router.get('/fav', passport.authenticate('jwt', {session: false}), async function (req, res, next) {
   try {
@@ -35,12 +59,23 @@ router.post('/fav/:offerid', passport.authenticate('jwt', {session: false}), asy
     }, {transaction: transaction});
 
     await transaction.commit();
+
+    const favOfferData = await CarOffer.findByPk(req.params.offerid, {
+      include: User
+    });
+
+    console.log(favOfferData);
+
+    await sendMail(favOfferData.User.email,
+      `Dear ${favOfferData.User.firstName}, someone followed your offer!`,
+      `Dear ${favOfferData.User.firstName}, user ${req.user.email} followed your offer "${favOfferData.title}"`);
+
     res.status(200).json({
       success: true
     });
   }
   catch (err) {
-    await transaction.rollback();
+    if (err instanceof QueryError) await transaction.rollback();
     res.status(400).json(makeErrorJson(err));
   }
 });
@@ -173,6 +208,7 @@ router.patch('/:offerid', passport.authenticate('jwt', {session: false}), async 
       transaction: transaction
     });
     transaction.commit();
+
     res.status(200).json({
       success: true
     })
