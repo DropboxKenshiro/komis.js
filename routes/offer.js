@@ -159,7 +159,10 @@ router.get('/:offerid', async function(req, res, next) {
         price: offerInfo.price,
         description: offerInfo.description,
         latiture: offerInfo.latitude,
-        longitude: offerInfo.longitude
+        longitude: offerInfo.longitude,
+        city: offerInfo.city,
+        street: offerInfo.street,
+        CountryName: offerInfo.CountryName
       });
     }
     else {
