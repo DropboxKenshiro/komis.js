@@ -212,6 +212,7 @@ Manufactuer.hasMany(CarOffer);
 CarModel.hasMany(CarOffer);
 EngineType.hasMany(CarOffer);
 User.hasMany(CarOffer);
+CarOffer.belongsTo(User);
 
 class FollowedOffer extends Model{};
 FollowedOffer.init({}, {sequelize});
