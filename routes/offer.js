@@ -200,7 +200,16 @@ router.patch('/:offerid', passport.authenticate('jwt', {session: false}), async 
   if(isIncluded(req.body.description)) editQuery.description = req.body.description;
   if(isIncluded(req.body.ManufactuerName)) editQuery.ManufactuerName = req.body.ManufactuerName;
   if(isIncluded(req.body.EngineTypeName)) editQuery.EngineTypeName = req.body.EngineTypeName;
+  if(isIncluded(req.body.city)) editQuery.city = req.body.city;
+  if(isIncluded(req.body.street)) editQuery.street = req.body.city;
+  if(isIncluded(req.body.CountryName)) editQuery.CountryName = req.body.CountryName;
   if(isIncluded(req.body.title)) editQuery.title = req.body.title;
+
+  if(isIncluded(req.body.city) || isIncluded(req.body.street)) {
+    const newLocation = locateAddress(req.body.city, req.body.street);
+    editQuery.latitude = newLocation[0];
+    editQuery.longitude = newLocation[1];
+  }
 
   const transaction = await sequelize.transaction();
   try {
@@ -265,6 +274,9 @@ router.post('/', passport.authenticate('jwt', {session: false}), async function(
             mileage: req.body.mileage,
             engineCapacity: req.body.engineCapacity,
             description: req.body.description,
+            city: req.body.city,
+            street: req.body.street,
+            CountryName: req.body.CountryName,
             latitude: addressLocation[0],
             longitude: addressLocation[1]
         });
