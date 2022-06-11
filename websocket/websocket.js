@@ -38,5 +38,4 @@ function make_server(httpServer) {
     return to_return;
 }
 
-
 module.exports = {make_server};

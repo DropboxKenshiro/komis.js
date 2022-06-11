@@ -37,7 +37,7 @@ passport.use(new LocalStrategy({usernameField: "email", session: false}, async f
     catch (err) {
         return done(err, false);
     }
-}))
+}));
 
 passport.use(new JwtStrategy(tokenOptions, async function (jwtPayload, done) {
     try {
@@ -53,7 +53,7 @@ passport.use(new JwtStrategy(tokenOptions, async function (jwtPayload, done) {
     catch (err) {
         return done(err, false);
     }
-}))
+}));
 
 function issueToken(userEmail) {
     return jsonwebtoken.sign({

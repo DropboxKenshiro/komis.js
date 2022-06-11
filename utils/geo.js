@@ -9,7 +9,7 @@ async function locateAddress(cityName, streetName) {
         }
     }
     const geodata = await client.geocode(options);
-    if(geodata.data.results) return [geodata.data.results[0].geometry.location.lat, geodata.data.results[0].geometry.location.lng]
+    if(geodata.data.results) return [geodata.data.results[0].geometry.location.lat, geodata.data.results[0].geometry.location.lng];
     else throw Error("Location not found.");
 }
 

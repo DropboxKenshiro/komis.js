@@ -137,7 +137,7 @@ router.get('/list', async function (req, res, next) {
     success: true,
     list: offerList
   });
-})
+});
 
 router.get('/:offerid', async function(req, res, next) {
   try {
@@ -184,11 +184,11 @@ router.patch('/:offerid', passport.authenticate('jwt', {session: false}), async 
       res.status(401).json({
         success: false,
         message: "Unauthorized"
-      })
+      });
     }
   }
   catch (err) {
-    res.status(400).json(makeErrorJson(err))
+    res.status(400).json(makeErrorJson(err));
   }
 
   editQuery = {};

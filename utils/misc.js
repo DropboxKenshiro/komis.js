@@ -1,5 +1,3 @@
-
-
 function makeErrorJson(err) {
     return {
         success: false,
