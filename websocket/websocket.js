@@ -1,7 +1,9 @@
 const {Server} = require('socket.io');
 
 function make_server(httpServer) {
-    const to_return = new Server(httpServer);
+    const to_return = new Server(httpServer, {cors: {
+        origin: "*"
+    }});
 
     to_return.on("connection", (socket) => {
         let channel = "";
