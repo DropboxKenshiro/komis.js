@@ -201,7 +201,7 @@ router.patch('/:offerid', passport.authenticate('jwt', {session: false}), async 
   if(isIncluded(req.body.ManufactuerName)) editQuery.ManufactuerName = req.body.ManufactuerName;
   if(isIncluded(req.body.EngineTypeName)) editQuery.EngineTypeName = req.body.EngineTypeName;
   if(isIncluded(req.body.city)) editQuery.city = req.body.city;
-  if(isIncluded(req.body.street)) editQuery.street = req.body.city;
+  if(isIncluded(req.body.street)) editQuery.street = req.body.street;
   if(isIncluded(req.body.CountryName)) editQuery.CountryName = req.body.CountryName;
   if(isIncluded(req.body.title)) editQuery.title = req.body.title;
 
