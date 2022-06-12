@@ -12,24 +12,27 @@ const req = require("express/lib/request");
 const mailjet = mailjetLib.connect(process.env.MAILJET_KEY, process.env.MAILJET_SECRET);
 
 async function sendMail(targetUser, subject, content) {
-  await mailjet.post('send', {version: 'v3.1'}).request({
-    Messages: [
-      {
-        From: {
-          Email: 'jatujestem144@gmail.com',
-          Name: "komis.js"
-        },
-        To: [
-          {
-            Email: targetUser,
-            Name: "You"
-          }
-        ],
-        Subject: subject,
-        TextPart: content
-      }
-    ]
-  });
+  try {
+    await mailjet.post('send', {version: 'v3.1'}).request({
+      Messages: [
+        {
+          From: {
+            Email: 'jatujestem144@gmail.com',
+            Name: "komis.js"
+          },
+          To: [
+            {
+              Email: targetUser,
+              Name: "You"
+            }
+          ],
+          Subject: subject,
+          TextPart: content
+        }
+      ]
+    });
+  }
+  catch (err) {}
 }
 
 router.get('/fav', passport.authenticate('jwt', {session: false}), async function (req, res, next) {
