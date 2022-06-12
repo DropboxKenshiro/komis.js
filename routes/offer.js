@@ -221,6 +221,10 @@ router.patch('/:offerid', passport.authenticate('jwt', {session: false}), async 
     });
     transaction.commit();
 
+    await sendMail(user.email,
+      `Dear ${user.email}, your offer has been edited.`,
+      `Dear ${user.email},  your offer "${favOfferData.title} has been succesfully edited. New data is visible to the users."`);
+
     res.status(200).json({
       success: true
     })
