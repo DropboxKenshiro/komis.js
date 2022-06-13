@@ -224,17 +224,17 @@ router.patch('/:offerid', passport.authenticate('jwt', {session: false}), async 
     });
     transaction.commit();
 
-    await sendMail(user.email,
-      `Dear ${user.email}, your offer has been edited.`,
-      `Dear ${user.email},  your offer "${favOfferData.title} has been succesfully edited. New data is visible to the users."`);
+    await sendMail(req.user.email,
+      `Dear ${req.user.email}, your offer has been edited.`,
+      `Dear ${req.user.email},  your offer has been succesfully edited. New data is visible to the users."`);
 
     res.status(200).json({
       success: true
-    })
+    });
   }
   catch (err) {
     transaction.rollback();
-    res.status(400).json(makeErrorJson(err))
+    res.status(400).json(makeErrorJson(err));
   }
 });
 
